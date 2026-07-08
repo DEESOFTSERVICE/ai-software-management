@@ -1,8 +1,128 @@
 @extends('layout')
-@section('pages')
-<section class="bg-zinc-100 py-10">
+@section('title',$blogDetails->meta_title)
+@section('meta_tags')
+<meta name="robots" content="index, follow">
+<meta name="title" content="{{ $blogDetails->meta_title }}">
+<meta name="description" content="{{ $blogDetails->meta_description }}">
+<meta name="keywords" content="{{ $blogDetails->meta_keywords }}">
+<meta property="og:title" content="{{ $blogDetails->meta_title }}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ route('blog.details',$blogDetails->slug) }}" />
+<meta property="og:image" content="{{ env('MAIN_SERVER_URL').'/uploads/blog_images/'.$blogDetails->thumbnail_image }}" />
+<meta property="og:description" content="{{ $blogDetails->meta_description }}" />
+<link rel="canonical" href="{{ route('blog.details',$blogDetails->slug) }}" />
 
-    <div class="max-w-screen-2xl mx-auto px-6">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $blogDetails->meta_title }}">
+<meta name="twitter:description" content="{{ $blogDetails->meta_description }}">
+<meta name="twitter:image" content="{{ env('MAIN_SERVER_URL').'/uploads/blog_images/'.$blogDetails->thumbnail_image }}">
+<meta name="twitter:url" content="{{ route('blog.details',$blogDetails->slug) }}">
+@endsection
+
+
+@push('css-styles')
+<style>
+    .prose p {
+        color: #52525b;
+        /* zinc-600 */
+        line-height: 1.75;
+        margin-bottom: 1.5rem;
+        font-size: 1.125rem;
+    }
+
+    .prose h2 {
+        color: #18181b;
+        /* zinc-900 */
+        font-size: 1.875rem;
+        font-weight: 800;
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .prose h3 {
+        color: #27272a;
+        /* zinc-800 */
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .prose h4 {
+        color: #27272a;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .prose ul {
+        list-style-type: disc;
+        padding-left: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .prose ul li {
+        color: #3f3f46;
+        /* zinc-700 */
+        margin-bottom: 0.5rem;
+    }
+
+    .prose a {
+        color: #d97706;
+        /* amber-600 */
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        transition: color 0.2s;
+    }
+
+    .prose a:hover {
+        color: #b45309;
+        /* amber-700 */
+    }
+</style>
+@endpush
+@section('json-data')
+<script type="application/ld+json">
+@php
+   $schema = [
+        "@context"      => "https://schema.org",
+        "@type"         => "BlogPosting",
+        "mainEntityOfPage" => [
+            "@type" => "WebPage",
+            "@id"   => url()->current()
+        ],
+        "headline"      => $blogDetails->title,
+        "description"   => strip_tags($blogDetails->meta_description ?? ''),
+        "image"         => env('MAIN_SERVER_URL') . '/uploads/blog_images/' . $blogDetails->thumbnail_image,
+        "author"        => [
+            "@type" => "Person",
+            "name"  => "Your Author Name",   // Yahan apna author name daal sakte ho
+            "url"   => url('/')
+        ],
+        "publisher"     => [
+            "@type" => "Organization",
+            "name"  => "Your Company Name",   // Apna company name daal do
+            "logo"  => [
+                "@type" => "ImageObject",
+                "url"   => env('MAIN_SERVER_URL') . '/uploads/general_setting_images/logo.png'
+            ]
+        ],
+        "datePublished" => $blogDetails->created_at->format('c'),
+        "dateModified"  => $blogDetails->updated_at->format('c') ?? $blogDetails->created_at->format('c')
+    ];
+@endphp
+{!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+</script>
+@endsection
+@section('pages')
+
+@php
+$imageNotFound = asset('home_assets/images/image-not-found.png');
+@endphp
+<section class="bg-zinc-100 py-0 md:py-4">
+
+    <div class="max-w-screen-2xl mx-auto px-1">
 
         <div class="grid lg:grid-cols-12 gap-8">
 
@@ -15,7 +135,7 @@
                 <div class="sticky top-24 space-y-6">
 
                     <!-- Author -->
-                    <div class="bg-white rounded-3xl p-6 shadow-sm border">
+                    <div class="hidden md:block bg-white rounded-3xl p-6 shadow-sm border">
 
                         <img src="https://i.pravatar.cc/120" class="w-20 h-20 rounded-full mx-auto">
 
@@ -51,52 +171,48 @@
 
                     <!-- Table of Contents -->
 
-                    <div class="bg-white rounded-3xl p-6 shadow-sm border">
+                    <!-- Added 'hidden md:block' to the parent div below -->
+                    <div class="hidden md:block bg-white rounded-3xl p-6 shadow-sm border">
 
                         <h3 class="font-bold text-xl mb-5">
                             Table of Contents
                         </h3>
 
                         <ul class="space-y-3 text-sm">
-
                             <li>
                                 <a href="#overview" class="hover:text-amber-600">
                                     Introduction
                                 </a>
                             </li>
-
                             <li>
                                 <a href="#features" class="hover:text-amber-600">
                                     Features
                                 </a>
                             </li>
-
                             <li>
                                 <a href="#pricing" class="hover:text-amber-600">
                                     Pricing
                                 </a>
                             </li>
-
                             <li>
                                 <a href="#pros" class="hover:text-amber-600">
                                     Pros & Cons
                                 </a>
                             </li>
-
                             <li>
                                 <a href="#faq" class="hover:text-amber-600">
                                     FAQ
                                 </a>
                             </li>
-
                         </ul>
 
                     </div>
 
+
                     <!-- Adsense -->
 
                     <div
-                        class="bg-white rounded-3xl h-[600px] border-2 border-dashed border-zinc-300 flex items-center justify-center">
+                        class="hidden md:flex bg-white rounded-3xl h-[600px] border-2 border-dashed border-zinc-300 flex items-center justify-center">
 
                         Google AdSense 300x600
 
@@ -114,20 +230,20 @@
 
                 <article class="bg-white rounded-3xl shadow-sm overflow-hidden">
 
-                    <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200"
-                        class="w-full h-[450px] object-cover">
+                    <img src="{{ env('MAIN_SERVER_URL').'/uploads/blog_images/'.$blogDetails->thumbnail_image }}" onerror="this.onerror=null;this.src='{{ $imageNotFound }}'" alt="{{ $blogDetails->title }}"
+                        class="w-full h-[250px] md:h-[450px] object-cover">
 
-                    <div class="p-10">
+                    <div class="p-3 md:p-10">
 
                         <span class="bg-amber-100 text-amber-700 px-4 py-2 rounded-full text-sm font-semibold">
 
-                            Project Management
+                            {{ $blogDetails->category->category_name }}
 
                         </span>
 
-                        <h1 class="text-5xl font-black mt-6 leading-tight">
+                        <h1 class="text-2xl md:text-5xl font-black mt-6 leading-tight">
 
-                            Best Project Management Software in 2026
+                            {{ $blogDetails->title }}
 
                         </h1>
 
@@ -137,7 +253,7 @@
 
                                 <i class="fa fa-calendar"></i>
 
-                                June 30, 2026
+                                {{ \Illuminate\Support\Carbon::parse($blogDetails->created_at)->format('M d, Y') }}
 
                             </span>
 
@@ -145,7 +261,7 @@
 
                                 <i class="fa fa-clock"></i>
 
-                                12 Min Read
+                                {{ $blogDetails->min_read }}
 
                             </span>
 
@@ -153,29 +269,13 @@
 
                                 <i class="fa fa-eye"></i>
 
-                                8,954 Views
+                                {{ $blogDetails->views }} Views
 
                             </span>
 
                         </div>
 
                         <div class="prose max-w-none mt-10">
-
-                            <h2 id="overview">
-                                Introduction
-                            </h2>
-
-                            <p>
-
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit...
-
-                            </p>
-
-                            <p>
-
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit...
-
-                            </p>
 
                         </div>
 
@@ -187,123 +287,19 @@
 
                         </div>
 
-                        <div class="prose max-w-none">
-
-                            <h2 id="features">
-
-                                Features
-
-                            </h2>
-
-                            <p>
-
-                                Lorem ipsum dolor sit amet...
-
-                            </p>
-
-                            <h2 id="pricing">
-
-                                Pricing
-
-                            </h2>
-
-                            <p>
-
-                                Lorem ipsum dolor sit amet...
-
-                            </p>
-
-                            <h2 id="pros">
-
-                                Pros & Cons
-
-                            </h2>
-
-                            <ul>
-
-                                <li>Easy to use</li>
-
-                                <li>Affordable</li>
-
-                                <li>Powerful integrations</li>
-
-                            </ul>
-
-                        </div>
                         <!-- ========================================= -->
                         <!-- Blog Content -->
                         <!-- ========================================= -->
 
                         <div class="prose prose-lg max-w-none prose-zinc">
+                            @php
+                            $ads_code = view()->exists('google_ad_code') ? view('google_ad_code')->render() : '';
+                            @endphp
 
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae turpis
-                                vulputate, vulputate ipsum at, pretium mauris. Curabitur vitae sem non
-                                velit bibendum feugiat. Aliquam erat volutpat. Donec at nibh ac ligula
-                                faucibus scelerisque. Sed posuere magna vel velit faucibus, eget
-                                pellentesque neque tincidunt.
-                            </p>
+                            {!! str_replace('[ads_code]',$ads_code, $blogDetails->full_desc) !!}
 
-                            <h2>What is Project Management Software?</h2>
 
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vel
-                                sollicitudin nisi. Duis dignissim, purus non placerat malesuada, risus
-                                purus scelerisque lorem, sed feugiat erat risus vitae elit. Curabitur
-                                pulvinar bibendum ipsum, et cursus purus consequat vitae.
-                            </p>
-
-                            <blockquote>
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
-                                tincidunt mauris at purus feugiat, nec luctus est luctus."
-                            </blockquote>
-
-                            <h2>Key Benefits</h2>
-
-                            <ul>
-                                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-                                <li>Vestibulum ante ipsum primis in faucibus orci luctus.</li>
-                                <li>Integer eget justo sed lorem facilisis hendrerit.</li>
-                                <li>Donec in purus sit amet erat feugiat volutpat.</li>
-                                <li>Nullam luctus turpis vitae augue efficitur suscipit.</li>
-                            </ul>
-
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                potenti. Integer vel orci nec lorem vulputate fermentum. Sed at lacus
-                                vitae neque dignissim ultrices. Mauris tempor orci sed justo tristique
-                                luctus.
-                            </p>
-
-                            <img src="https://picsum.photos/1200/600" alt="Software Dashboard" class="rounded-2xl">
-
-                            <h2>Important Features</h2>
-
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tempor
-                                arcu sed lorem faucibus, sit amet dictum est placerat. Morbi tincidunt
-                                est in purus volutpat, sed sollicitudin lectus fermentum.
-                            </p>
-
-                            <ol>
-                                <li>Task Management</li>
-                                <li>Project Planning</li>
-                                <li>Time Tracking</li>
-                                <li>Team Collaboration</li>
-                                <li>Reporting Dashboard</li>
-                                <li>AI Automation</li>
-                            </ol>
-
-                            <h3>Why Businesses Choose It</h3>
-
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque
-                                habitant morbi tristique senectus et netus et malesuada fames ac turpis
-                                egestas. Donec gravida sapien at felis porta, sed posuere mauris
-                                facilisis.
-                            </p>
-
-                            <div class="grid md:grid-cols-2 gap-6">
+                            <div class="grid md:grid-cols-2 gap-6 mt-10">
 
                                 <div class="bg-green-50 border border-green-200 rounded-2xl p-6">
 
@@ -337,118 +333,11 @@
 
                             </div>
 
-                            <h2>Pricing</h2>
-
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sed
-                                lacus in lectus posuere placerat. Cras tincidunt purus eget turpis
-                                convallis, sed cursus augue hendrerit.
-                            </p>
-
-                            <table>
-
-                                <thead>
-
-                                    <tr>
-
-                                        <th>Plan</th>
-
-                                        <th>Monthly Price</th>
-
-                                        <th>Best For</th>
-
-                                    </tr>
-
-                                </thead>
-
-                                <tbody>
-
-                                    <tr>
-
-                                        <td>Free</td>
-
-                                        <td>$0</td>
-
-                                        <td>Individuals</td>
-
-                                    </tr>
-
-                                    <tr>
-
-                                        <td>Starter</td>
-
-                                        <td>$9</td>
-
-                                        <td>Small Teams</td>
-
-                                    </tr>
-
-                                    <tr>
-
-                                        <td>Business</td>
-
-                                        <td>$19</td>
-
-                                        <td>Growing Companies</td>
-
-                                    </tr>
-
-                                    <tr>
-
-                                        <td>Enterprise</td>
-
-                                        <td>Custom</td>
-
-                                        <td>Large Organizations</td>
-
-                                    </tr>
-
-                                </tbody>
-
-                            </table>
-
-                            <h2>Final Thoughts</h2>
-
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed et sapien
-                                sed nisl malesuada aliquet. Integer ultricies nibh non velit volutpat,
-                                quis faucibus augue volutpat. Morbi pellentesque consequat elit, sed
-                                convallis orci aliquam ac.
-                            </p>
-
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae
-                                sapien vitae velit efficitur malesuada. Vestibulum nec ligula eget
-                                mauris scelerisque laoreet. Donec malesuada turpis nec augue varius,
-                                vitae feugiat justo porta. Sed viverra, mauris vitae volutpat dictum,
-                                augue velit luctus neque, sed faucibus lorem justo at elit.
-                            </p>
-
                         </div>
 
                         <!-- Adsense -->
 
-                        <div class="my-12 rounded-3xl border-2 border-dashed h-24 flex items-center justify-center">
 
-                            Google AdSense 728x90
-
-                        </div>
-
-                        <div class="prose max-w-none">
-
-                            <h2 id="faq">
-
-                                Frequently Asked Questions
-
-                            </h2>
-
-                            <p>
-
-                                Lorem ipsum dolor sit amet...
-
-                            </p>
-
-                        </div>
 
                     </div>
 
@@ -506,72 +395,29 @@
                         </h3>
 
                         <div class="space-y-5">
+                            @foreach($popularBlog as $k => $v)
+                            <a href="{{ route('blog.details',$v->slug) }}" class="flex gap-4">
 
-                            <a href="#" class="flex gap-4">
-
-                                <img src="https://picsum.photos/90/70?1" class="rounded-xl">
+                                <img src="{{ env('MAIN_SERVER_URL').'/uploads/blog_images/'.$v->thumbnail_image }}" onerror="this.onerror=null;this.src='{{ $imageNotFound }}'" alt="{{ $v->title }}" class="w-20 rounded-xl">
 
                                 <div>
 
                                     <h4 class="font-semibold">
 
-                                        Best CRM Software
+                                        {{ $v->title }}
 
                                     </h4>
 
                                     <span class="text-sm text-zinc-500">
 
-                                        6 Min Read
+                                        {{ $v->min_read }}
 
                                     </span>
 
                                 </div>
 
                             </a>
-
-                            <a href="#" class="flex gap-4">
-
-                                <img src="https://picsum.photos/90/70?2" class="rounded-xl">
-
-                                <div>
-
-                                    <h4 class="font-semibold">
-
-                                        Top ERP Platforms
-
-                                    </h4>
-
-                                    <span class="text-sm text-zinc-500">
-
-                                        8 Min Read
-
-                                    </span>
-
-                                </div>
-
-                            </a>
-
-                            <a href="#" class="flex gap-4">
-
-                                <img src="https://picsum.photos/90/70?3" class="rounded-xl">
-
-                                <div>
-
-                                    <h4 class="font-semibold">
-
-                                        Monday vs ClickUp
-
-                                    </h4>
-
-                                    <span class="text-sm text-zinc-500">
-
-                                        10 Min Read
-
-                                    </span>
-
-                                </div>
-
-                            </a>
+                            @endforeach
 
                         </div>
 

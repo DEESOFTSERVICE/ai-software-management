@@ -1,9 +1,65 @@
 @extends('layout')
+@section('title',($pageType == 'static' ? $metaTags->meta_title : ($pageType == 'tags' ? $metaTags->meta_title : $categoryDetails->meta_title)))
+@section('meta_tags')
+@if($pageType == 'static')
+<meta name="title" content="{{ $metaTags->meta_title }}">
+<meta name="description" content="{{ $metaTags->meta_description }}">
+<meta name="keywords" content="">
+<meta property="og:title" content="{{ $metaTags->meta_title }}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ route('blogs') }}" />
+<meta property="og:image" content="{{ env('MAIN_SERVER_URL').'/uploads/general_setting_images/'.$websiteSetting->header_logo }}" />
+<meta property="og:description" content="{{ $metaTags->meta_description }}" />
+<link rel="canonical" href="{{ route('blogs') }}" />
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{  $metaTags->meta_title }}">
+<meta name="twitter:description" content="{{ $metaTags->meta_description }}">
+<meta name="twitter:image" content="{{ env('MAIN_SERVER_URL').'/uploads/general_setting_images/'.$websiteSetting->header_logo }}">
+<meta name="twitter:url" content="{{ route('blogs') }}">
+@elseif($pageType == 'tags')
+<meta name="title" content="{{ $metaTags->meta_title }}">
+<meta name="description" content="{{ $metaTags->meta_description }}">
+<meta name="keywords" content="">
+<meta property="og:title" content="{{ $metaTags->meta_title }}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ route('blogs') }}" />
+<meta property="og:image" content="{{ env('MAIN_SERVER_URL').'/uploads/general_setting_images/'.$websiteSetting->header_logo }}" />
+<meta property="og:description" content="{{ $metaTags->meta_description }}" />
+<link rel="canonical" href="{{ route('blogs') }}" />
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{  $metaTags->meta_title }}">
+<meta name="twitter:description" content="{{ $metaTags->meta_description }}">
+<meta name="twitter:image" content="{{ env('MAIN_SERVER_URL').'/uploads/general_setting_images/'.$websiteSetting->header_logo }}">
+<meta name="twitter:url" content="{{ route('blogs') }}">
+@else
+<meta name="robots" content="index, follow">
+<meta name="title" content="{{ $categoryDetails->meta_title }}">
+<meta name="description" content="{{ $categoryDetails->meta_description }}">
+<meta name="keywords" content="">
+<meta property="og:title" content="{{ $categoryDetails->meta_title }}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ route('blogs.category',$categoryDetails->slug) }}" />
+<meta property="og:image" content="{{ env('MAIN_SERVER_URL').'/uploads/general_setting_images/'.$websiteSetting->header_logo }}" />
+<meta property="og:description" content="{{ $categoryDetails->meta_description }}" />
+<link rel="canonical" href="{{ route('blogs.category',$categoryDetails->slug) }}" />
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $categoryDetails->meta_title }}">
+<meta name="twitter:description" content="{{ $categoryDetails->meta_description }}">
+<meta name="twitter:image" content="{{ env('MAIN_SERVER_URL').'/uploads/general_setting_images/'.$websiteSetting->header_logo }}">
+<meta name="twitter:url" content="{{ route('blogs.category',$categoryDetails->slug) }}">
+@endif
+@endsection
 @section('pages')
+@php
+$imageNotFound = asset('home_assets/images/image-not-found.png');
+@endphp
 <div class="max-w-screen-2xl mx-auto p-6">
     <div class="h-48 border-2 border-dashed flex items-center justify-center bg-white rounded">Google AdSense
         970x250</div>
-    <div class="grid lg:grid-cols-12 gap-6 mt-8">
+    <div class="grid lg:grid-cols-12 gap-6 mt-1 md:mt-8">
         <!-- ========================================= -->
         <!-- Left Sticky Sidebar -->
         <!-- ========================================= -->
@@ -13,203 +69,67 @@
             <div class="sticky top-20 space-y-6">
                 <!-- Google AdSense -->
 
-                <div
-                    class="bg-white rounded-3xl border-2 border-dashed border-zinc-300 h-[600px] flex items-center justify-center">
-
+                <div class="hidden md:flex bg-white rounded-3xl border-2 border-dashed border-zinc-300 h-[600px] items-center justify-center">
                     <div class="text-center">
-
                         <i class="fa-brands fa-google text-5xl text-zinc-400 mb-4"></i>
-
                         <h4 class="font-semibold">
                             Google AdSense
                         </h4>
-
                         <p class="text-sm text-zinc-500 mt-2">
                             300 × 600
                         </p>
-
                     </div>
-
                 </div>
+
 
 
                 <!-- Categories -->
 
-                <div class="bg-white rounded-3xl border border-zinc-200 shadow-sm p-6">
+                <!-- Added 'hidden md:block' to the parent div below -->
+                <div class="hidden md:block bg-white rounded-3xl border border-zinc-200 shadow-sm p-6">
 
                     <div class="flex items-center justify-between mb-5">
-
                         <h3 class="text-xl font-bold">
                             Categories
                         </h3>
 
-                        <span class="text-xs bg-amber-100 text-amber-700 px-3 py-1 rounded-full">
-                            18
-                        </span>
-
                     </div>
 
                     <div class="space-y-3">
-
-                        <a href="#"
-                            class="flex items-center justify-between rounded-2xl px-4 py-3 hover:bg-amber-50 hover:text-amber-600 transition">
-
+                        @foreach($exploreCategory as $k => $v)
+                        <a href="#" class="flex items-center justify-between rounded-2xl px-4 py-3 hover:bg-amber-50 hover:text-amber-600 transition">
                             <div class="flex items-center gap-3">
-
                                 <i class="fa-solid fa-chart-line text-amber-500"></i>
-
-                                <span>Project Management</span>
-
+                                <span>{{ $v->category_name }}</span>
                             </div>
-
                             <span class="text-xs bg-zinc-100 px-2 py-1 rounded-full">
-                                42
+                                {{ $v->total_blogs }}
                             </span>
-
                         </a>
-
-                        <a href="#"
-                            class="flex items-center justify-between rounded-2xl px-4 py-3 hover:bg-amber-50 hover:text-amber-600 transition">
-
-                            <div class="flex items-center gap-3">
-
-                                <i class="fa-solid fa-users text-sky-500"></i>
-
-                                <span>CRM Software</span>
-
-                            </div>
-
-                            <span class="text-xs bg-zinc-100 px-2 py-1 rounded-full">
-                                35
-                            </span>
-
-                        </a>
-
-                        <a href="#"
-                            class="flex items-center justify-between rounded-2xl px-4 py-3 hover:bg-amber-50 hover:text-amber-600 transition">
-
-                            <div class="flex items-center gap-3">
-
-                                <i class="fa-solid fa-building text-indigo-500"></i>
-
-                                <span>ERP</span>
-
-                            </div>
-
-                            <span class="text-xs bg-zinc-100 px-2 py-1 rounded-full">
-                                29
-                            </span>
-
-                        </a>
-
-                        <a href="#"
-                            class="flex items-center justify-between rounded-2xl px-4 py-3 hover:bg-amber-50 hover:text-amber-600 transition">
-
-                            <div class="flex items-center gap-3">
-
-                                <i class="fa-solid fa-user-tie text-green-500"></i>
-
-                                <span>HRMS</span>
-
-                            </div>
-
-                            <span class="text-xs bg-zinc-100 px-2 py-1 rounded-full">
-                                18
-                            </span>
-
-                        </a>
-
-                        <a href="#"
-                            class="flex items-center justify-between rounded-2xl px-4 py-3 hover:bg-amber-50 hover:text-amber-600 transition">
-
-                            <div class="flex items-center gap-3">
-
-                                <i class="fa-solid fa-robot text-purple-500"></i>
-
-                                <span>AI Tools</span>
-
-                            </div>
-
-                            <span class="text-xs bg-zinc-100 px-2 py-1 rounded-full">
-                                67
-                            </span>
-
-                        </a>
-
-                        <a href="#"
-                            class="flex items-center justify-between rounded-2xl px-4 py-3 hover:bg-amber-50 hover:text-amber-600 transition">
-
-                            <div class="flex items-center gap-3">
-
-                                <i class="fa-solid fa-money-bill-wave text-emerald-500"></i>
-
-                                <span>Accounting</span>
-
-                            </div>
-
-                            <span class="text-xs bg-zinc-100 px-2 py-1 rounded-full">
-                                24
-                            </span>
-
-                        </a>
-
+                        @endforeach
                     </div>
 
                 </div>
 
-                <!-- Popular Tags -->
 
-                <div class="bg-white rounded-3xl border border-zinc-200 shadow-sm p-6">
+                <!-- Popular Tags -->
+                @if(!empty($websiteSetting->popular_tags))
+                <!-- Added 'hidden md:block' to the parent div below -->
+                <div class="hidden md:block bg-white rounded-3xl border border-zinc-200 shadow-sm p-6">
 
                     <h3 class="text-xl font-bold mb-5">
-
                         Popular Tags
-
                     </h3>
 
                     <div class="flex flex-wrap gap-3">
-
-                        <a href="#"
-                            class="px-4 py-2 rounded-full bg-zinc-100 hover:bg-amber-500 hover:text-white transition">
-                            AI
+                        @foreach(explode(',',$websiteSetting->popular_tags) as $k => $v)
+                        <a href="{{ route('blog.tags',\illuminate\Support\Str::slug($v)) }}" class="px-4 py-2 rounded-full bg-zinc-100 hover:bg-amber-500 hover:text-white transition">
+                            {{ $v }}
                         </a>
-
-                        <a href="#"
-                            class="px-4 py-2 rounded-full bg-zinc-100 hover:bg-amber-500 hover:text-white transition">
-                            CRM
-                        </a>
-
-                        <a href="#"
-                            class="px-4 py-2 rounded-full bg-zinc-100 hover:bg-amber-500 hover:text-white transition">
-                            ERP
-                        </a>
-
-                        <a href="#"
-                            class="px-4 py-2 rounded-full bg-zinc-100 hover:bg-amber-500 hover:text-white transition">
-                            HRMS
-                        </a>
-
-                        <a href="#"
-                            class="px-4 py-2 rounded-full bg-zinc-100 hover:bg-amber-500 hover:text-white transition">
-                            SaaS
-                        </a>
-
-                        <a href="#"
-                            class="px-4 py-2 rounded-full bg-zinc-100 hover:bg-amber-500 hover:text-white transition">
-                            Automation
-                        </a>
-
-                        <a href="#"
-                            class="px-4 py-2 rounded-full bg-zinc-100 hover:bg-amber-500 hover:text-white transition">
-                            Startups
-                        </a>
-
+                        @endforeach
                     </div>
-
                 </div>
-
-
-
+                @endif
             </div>
 
         </aside>
@@ -217,14 +137,14 @@
             <!-- ========================================= -->
             <!-- Premium Blog Card -->
             <!-- ========================================= -->
-            @foreach(range(0,7) as $k => $v)
+            @foreach($popularBlog as $k => $v)
             <div
                 class="group bg-white rounded-3xl border border-zinc-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
 
                 <!-- Thumbnail -->
                 <div class="relative overflow-hidden">
 
-                    <img src="https://picsum.photos/600/400?random=1" alt="Blog Thumbnail"
+                    <img src="{{ env('MAIN_SERVER_URL').'/uploads/blog_images/'.$v->thumbnail_image }}" onerror="this.onerror=null;this.src='{{ $imageNotFound }}'" alt="{{ $v->title }}"
                         class="w-full h-60 object-cover transition duration-500 group-hover:scale-110">
 
                     <!-- Category -->
@@ -232,7 +152,7 @@
                     <span
                         class="absolute top-5 left-5 bg-amber-500 text-white px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wide">
 
-                        Project Management
+                        {{ $v->category->category_name }}
 
                     </span>
 
@@ -243,7 +163,7 @@
 
                         <i class="fa-regular fa-clock mr-1"></i>
 
-                        8 Min Read
+                        {{ $v->min_read }}
 
                     </span>
 
@@ -261,7 +181,7 @@
 
                             <i class="fa-regular fa-calendar"></i>
 
-                            June 30, 2026
+                            {{ \Illuminate\Support\Carbon::parse($v->created_at)->format('M d, Y') }}
 
                         </div>
 
@@ -269,7 +189,7 @@
 
                             <i class="fa-regular fa-eye"></i>
 
-                            12.5K
+                            {{ $v->views }}
 
                         </div>
 
@@ -280,7 +200,7 @@
                     <h3
                         class="text-xl font-bold mt-5 leading-snug group-hover:text-amber-600 transition line-clamp-2">
 
-                        <a href="/blog/best-project-management-software-for-2026">Best Project Management Software for Small Businesses in 2026</a>
+                        <a href="{{ route('blog.details',$v->slug) }}">{{ $v->title }}</a>
 
                     </h3>
 
@@ -297,25 +217,15 @@
                     <!-- Tags -->
 
                     <div class="flex flex-wrap gap-2 mt-6">
-
-                        <span class="bg-zinc-100 text-zinc-700 px-3 py-1 rounded-full text-xs">
-
-                            AI
-
-                        </span>
-
-                        <span class="bg-zinc-100 text-zinc-700 px-3 py-1 rounded-full text-xs">
-
-                            SaaS
-
-                        </span>
-
-                        <span class="bg-zinc-100 text-zinc-700 px-3 py-1 rounded-full text-xs">
-
-                            Productivity
-
-                        </span>
-
+                        @if($v->tags!="")
+                        @foreach(explode(',',$v->tags) as $k => $v)
+                        <a href="{{ route('blog.tags',\Illuminate\Support\Str::slug($v)) }}">
+                            <span class="bg-zinc-100 text-zinc-700 px-3 py-1 rounded-full text-xs">
+                                {{$v}}
+                            </span>
+                        </a>
+                        @endforeach
+                        @endif
                     </div>
 
 

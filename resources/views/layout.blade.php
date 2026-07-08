@@ -2,9 +2,14 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Header Design</title>
+    <title>@yield('title')</title>
+    @yield('meta_tags')
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" type="image/x-icon"
+        href="{{ env('MAIN_SERVER_URL').'/uploads/general_setting_images/'.$websiteSetting->favicon }}?v=2">
+        
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -31,32 +36,16 @@
             pointer-events: auto;
         }
 
-        /* Smooth hover effect for chevron */
-        .group:hover i {
-            transform: rotate(180deg);
-        }
+        
     </style>
+    @stack('css-styles')
+    
+    @yield('json-data')
 </head>
 
 <body class="bg-zinc-50">
 
-    <!-- Top Bar -->
-    <div class="bg-gradient-to-r from-amber-600 to-yellow-600 text-white py-2.5 text-sm">
-        <div class="max-w-screen-2xl mx-auto px-6 flex items-center justify-between">
-            <div class="flex items-center gap-x-6">
-                <div class="flex items-center gap-x-2">
-                    <i class="fa-solid fa-gift"></i>
-                    <span class="font-medium">Limited Time Offer:</span>
-                    <span>Get 30 Days Free + 20% OFF on Annual Plans</span>
-                </div>
-            </div>
-            <div class="hidden md:flex items-center gap-x-5 text-xs uppercase tracking-widest">
-                <a href="#" class="hover:underline">Limited Slots Available</a>
-                <span class="w-px h-3 bg-white/40"></span>
-                <a href="#" class="hover:underline">Offer Ends Soon →</a>
-            </div>
-        </div>
-    </div>
+
 
     <!-- ========================= -->
     <!-- Premium Navbar -->
@@ -65,7 +54,7 @@
         <div class="max-w-screen-2xl mx-auto px-6">
             <div class="h-20 flex items-center justify-between">
                 <!-- Logo -->
-                <a href="#" class="flex items-center gap-3">
+                <a href="{{ route('index') }}" class="flex items-center gap-3">
                     <div class="w-11 h-11 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white flex items-center justify-center text-2xl font-bold">
                         A
                     </div>
@@ -77,7 +66,7 @@
 
                 <!-- Desktop Menu -->
                 <nav class="hidden lg:flex items-center gap-8 font-medium">
-                    <a href="#" class="hover:text-amber-600 transition-colors">Home</a>
+                    <a href="{{ route('index') }}" class="hover:text-amber-600 transition-colors">Home</a>
 
                     <!-- Mega Menu -->
                     <div class="relative group" id="softwareMenu">
@@ -142,9 +131,9 @@
                         </div>
                     </div>
 
-                    <a href="#" class="hover:text-amber-600 transition-colors">Blogs</a>
-                    <a href="#" class="hover:text-amber-600 transition-colors">About</a>
-                    <a href="#" class="hover:text-amber-600 transition-colors">Contact</a>
+                    <a href="{{ route('blogs') }}" class="hover:text-amber-600 transition-colors">Blogs</a>
+                    <a href="{{ route('about') }}" class="hover:text-amber-600 transition-colors">About</a>
+                    <a href="{{ route('contact') }}" class="hover:text-amber-600 transition-colors">Contact</a>
                 </nav>
 
                 <!-- Right Side -->
@@ -165,7 +154,7 @@
         <div id="mobileMenu" class="hidden lg:hidden fixed inset-0 bg-white z-50 overflow-y-auto">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-8">
-                    <a href="#" class="flex items-center gap-3">
+                    <a href="{{ route('index') }}" class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white flex items-center justify-center text-2xl font-bold">A</div>
                         <span class="text-2xl font-black">AIManager</span>
                     </a>
@@ -173,10 +162,10 @@
                 </div>
 
                 <div class="space-y-6 text-lg">
-                    <a href="#" class="block py-2">Home</a>
-                    <a href="#" class="block py-2">Blogs</a>
-                    <a href="#" class="block py-2">About</a>
-                    <a href="#" class="block py-2">Contact</a>
+                    <a href="{{ route('index') }}" class="block py-2">Home</a>
+                    <a href="{{ route('blogs') }}" class="block py-2">Blogs</a>
+                    <a href="{{ route('about') }}" class="block py-2">About</a>
+                    <a href="{{ route('contact') }}" class="block py-2">Contact</a>
 
                     <div class="pt-4 border-t">
                         <h3 class="font-bold text-amber-600 mb-4">Software Categories</h3>
@@ -203,19 +192,17 @@
 
         <div class="p-6 space-y-5">
 
-            <a class="block" href="#">Home</a>
+            <a class="block" href="{{ route('index') }}">Home</a>
 
             <a class="block" href="#">Software</a>
 
             <a class="block" href="#">Services</a>
 
-            <a class="block" href="#">Compare</a>
+            <a class="block" href="{{ route('blogs') }}">Blogs</a>
 
-            <a class="block" href="#">Blogs</a>
+            <a class="block" href="{{ route('about') }}">About</a>
 
-            <a class="block" href="#">About</a>
-
-            <a class="block" href="#">Contact</a>
+            <a class="block" href="{{ route('contact') }}">Contact</a>
 
             <!-- <a href="#"
                 class="block text-center bg-amber-500 text-white py-3 rounded-xl">
@@ -232,7 +219,7 @@
     <!-- ========================= -->
     <!-- Footer Start -->
     <!-- ========================= -->
-    <footer class="bg-zinc-950 text-zinc-300 mt-20">
+    <footer class="bg-zinc-950 text-zinc-300 mt-6">
 
         <!-- Top Footer -->
         <div class="max-w-screen-2xl mx-auto px-6 lg:px-10 py-16">
@@ -243,7 +230,7 @@
                 <div>
 
                     <!-- Logo -->
-                    <a href="#" class="flex items-center gap-3 mb-5">
+                    <a href="{{ route('index') }}" class="flex items-center gap-3 mb-5">
                         <div
                             class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center text-white text-2xl font-bold">
                             A
@@ -295,37 +282,25 @@
                     <ul class="space-y-4 text-sm">
 
                         <li>
-                            <a href="#" class="hover:text-amber-400 transition">
+                            <a href="{{ route('index') }}" class="hover:text-amber-400 transition">
                                 Home
                             </a>
                         </li>
 
                         <li>
-                            <a href="#" class="hover:text-amber-400 transition">
+                            <a href="{{ route('about') }}" class="hover:text-amber-400 transition">
                                 About Us
                             </a>
                         </li>
 
                         <li>
-                            <a href="#" class="hover:text-amber-400 transition">
-                                Software
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="#" class="hover:text-amber-400 transition">
-                                Pricing
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="#" class="hover:text-amber-400 transition">
+                            <a href="{{ route('blogs') }}" class="hover:text-amber-400 transition">
                                 Blog
                             </a>
                         </li>
 
                         <li>
-                            <a href="#" class="hover:text-amber-400 transition">
+                            <a href="{{ route('contact') }}" class="hover:text-amber-400 transition">
                                 Contact Us
                             </a>
                         </li>
@@ -407,7 +382,7 @@
                                 </p>
 
                                 <a href="#" class="hover:text-amber-400 transition">
-                                    +91 98765 43210
+                                    +91 {{ $websiteSetting->whats_app_no }}
                                 </a>
 
                             </div>
@@ -429,7 +404,7 @@
                                 </p>
 
                                 <a href="#" class="hover:text-amber-400 transition">
-                                    support@aimanager.com
+                                    {{ $websiteSetting->email }}
                                 </a>
 
                             </div>
@@ -447,27 +422,27 @@
 
                         <div class="flex gap-3">
 
-                            <a href="#"
+                            <a href="{{ $websiteSetting->facebook_url }}"
                                 class="w-11 h-11 rounded-xl bg-zinc-900 hover:bg-amber-500 transition flex items-center justify-center">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
 
-                            <a href="#"
+                            <a href="{{ $websiteSetting->twitter_url }}"
                                 class="w-11 h-11 rounded-xl bg-zinc-900 hover:bg-sky-500 transition flex items-center justify-center">
                                 <i class="fab fa-x-twitter"></i>
                             </a>
 
-                            <a href="#"
+                            <a href="{{ $websiteSetting->instagram_url }}"
                                 class="w-11 h-11 rounded-xl bg-zinc-900 hover:bg-pink-500 transition flex items-center justify-center">
                                 <i class="fab fa-instagram"></i>
                             </a>
 
-                            <a href="#"
+                            <a href="{{ $websiteSetting->linkedin_url }}"
                                 class="w-11 h-11 rounded-xl bg-zinc-900 hover:bg-blue-600 transition flex items-center justify-center">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
 
-                            <a href="#"
+                            <a href="{{ $websiteSetting->youtube_url }}"
                                 class="w-11 h-11 rounded-xl bg-zinc-900 hover:bg-red-600 transition flex items-center justify-center">
                                 <i class="fab fa-youtube"></i>
                             </a>

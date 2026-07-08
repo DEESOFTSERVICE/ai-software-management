@@ -24,7 +24,7 @@
 
 <!-- Contact -->
 
-<section class="py-20">
+<section class="py-10">
 
     <div class="max-w-7xl mx-auto px-6">
 

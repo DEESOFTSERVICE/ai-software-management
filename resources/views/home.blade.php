@@ -1,4 +1,22 @@
 @extends('layout')
+@section('title',$metaTags->meta_title)
+@section('meta_tags')
+<meta name="robots" content="index, follow">
+<meta name="title" content="{{ $metaTags->meta_title }}">
+<meta name="description" content="{{ $metaTags->meta_description }}">
+<meta name="keywords" content="">
+<meta property="og:title" content="{{ $metaTags->meta_title }}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ url('/') }}" />
+<meta property="og:image" content="{{ env('MAIN_SERVER_URL').'/uploads/general_setting_images/'.$websiteSetting->header_logo }}" />
+<meta property="og:description" content="{{ $metaTags->meta_description }}" />
+<link rel="canonical" href="{{ url('/') }}" />
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{  $metaTags->meta_title }}">
+<meta name="twitter:description" content="{{ $metaTags->meta_description }}">
+<meta name="twitter:image" content="{{ env('MAIN_SERVER_URL').'/uploads/general_setting_images/'.$websiteSetting->header_logo }}">
+<meta name="twitter:url" content="{{ url('/') }}">
+@endsection
 @section('pages')
 <!-- Hero Section -->
 <section class="relative overflow-hidden bg-gradient-to-br from-white via-amber-50/40 to-orange-50 py-6">
@@ -457,7 +475,7 @@
 <!-- ========================= -->
 <!-- Trusted Companies Section -->
 <!-- ========================= -->
-<section class="py-16 bg-white border-y border-zinc-200">
+<section class="py-10 bg-white border-y border-zinc-200">
 
     <div class="max-w-screen-2xl mx-auto px-6 lg:px-10">
 
@@ -482,7 +500,7 @@
         </div>
 
         <!-- Companies -->
-        <div class="mt-14 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="mt-14 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
 
             <!-- Company -->
             <!-- Premium Software Card -->
@@ -611,7 +629,7 @@
 <!-- ========================================= -->
 <!-- Browse by Category -->
 <!-- ========================================= -->
-<section class="py-20 bg-gradient-to-b from-zinc-50 to-white">
+<section class="py-10 bg-gradient-to-b from-zinc-50 to-white">
 
     <div class="max-w-screen-2xl mx-auto px-6 lg:px-10">
 
@@ -647,11 +665,11 @@
         </div>
 
         <!-- Categories -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
 
             <!-- Premium Category Card -->
-            @foreach(range(0,7) as $k => $v)
-            <a href="#"
+            @foreach($exploreCategory as $k => $v)
+            <a href="{{ route('blogs.category',$v->slug) }}"
                 class="group relative overflow-hidden rounded-3xl border border-zinc-200 bg-white p-7 transition-all duration-300 hover:-translate-y-2 hover:border-amber-400 hover:shadow-2xl">
 
                 <!-- Background Decoration -->
@@ -672,7 +690,7 @@
                     </div>
 
                     <span class="rounded-full bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1">
-                        45+
+                        {{ $v->total_blogs }}+
                     </span>
 
                 </div>
@@ -683,13 +701,13 @@
 
                     <h3 class="text-xl font-bold text-zinc-900 group-hover:text-blue-600 transition">
 
-                        CRM Software
+                        {{ $v->category_name }}
 
                     </h3>
 
                     <p class="mt-3 text-zinc-500 leading-7">
 
-                        Compare the best CRM software for sales, customer support and business growth.
+                        {{ $v->short_desc }}
 
                     </p>
 
@@ -726,7 +744,7 @@
 <!-- Development Process -->
 <!-- ========================================= -->
 
-<section class="py-24 bg-zinc-50">
+<section class="py-10 bg-zinc-50">
 
     <div class="max-w-7xl mx-auto px-6">
 
@@ -978,7 +996,7 @@
 <!-- ========================================= -->
 <!-- Featured Freelancers (Sponsored) -->
 <!-- ========================================= -->
-<section class="py-24 bg-gradient-to-b from-zinc-50 to-white">
+<section class="py-10 bg-gradient-to-b from-zinc-50 to-white">
 
     <div class="max-w-screen-2xl mx-auto px-6 lg:px-10">
 
@@ -1272,12 +1290,12 @@
 <!-- ========================================= -->
 <!-- FAQ Section -->
 <!-- ========================================= -->
-<section class="py-24 bg-gradient-to-b from-white to-zinc-50">
+<section class="py-10 bg-gradient-to-b from-white to-zinc-50">
 
     <div class="max-w-7xl mx-auto px-6 lg:px-10">
 
         <!-- Heading -->
-        <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="text-center max-w-3xl mx-auto mb-6">
 
             <span
                 class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold">
@@ -1297,11 +1315,11 @@
 
         </div>
 
-        <div class="grid lg:grid-cols-2 gap-12 items-start">
+        <div class="grid lg:grid-cols-1 gap-12 items-start">
 
             <!-- Left -->
-            <div class="space-y-5">
-
+            <div class="space-y-2">
+                @foreach($faqs as $k => $v)
                 <!-- Item -->
                 <div class="faq-item bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
 
@@ -1309,7 +1327,7 @@
                         class="faq-btn w-full flex items-center justify-between text-left px-8 py-6 hover:bg-zinc-50 transition">
 
                         <span class="text-lg font-semibold text-zinc-900">
-                            How do you recommend software?
+                            {{ $v->question }}
                         </span>
 
                         <i class="fa-solid fa-plus text-amber-500 transition-transform duration-300"></i>
@@ -1317,207 +1335,19 @@
                     </button>
 
                     <div class="faq-content hidden px-8 pb-7 text-zinc-600 leading-8">
-                        We compare software based on features, pricing, ease of use,
-                        customer reviews, integrations, scalability and overall value
-                        for businesses of different sizes.
+                        {{ $v->answer_desc }}
                     </div>
 
                 </div>
-
-                <!-- Item -->
-                <div class="faq-item bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
-
-                    <button
-                        class="faq-btn w-full flex items-center justify-between text-left px-8 py-6 hover:bg-zinc-50 transition">
-
-                        <span class="text-lg font-semibold text-zinc-900">
-                            Are your software reviews unbiased?
-                        </span>
-
-                        <i class="fa-solid fa-plus text-amber-500 transition-transform duration-300"></i>
-
-                    </button>
-
-                    <div class="faq-content hidden px-8 pb-7 text-zinc-600 leading-8">
-                        Yes. Every software is evaluated using a consistent review
-                        process. While some links are affiliate links, our rankings are
-                        based on research and product quality.
-                    </div>
-
-                </div>
-
-                <!-- Item -->
-                <div class="faq-item bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
-
-                    <button
-                        class="faq-btn w-full flex items-center justify-between text-left px-8 py-6 hover:bg-zinc-50 transition">
-
-                        <span class="text-lg font-semibold text-zinc-900">
-                            Do I pay extra when using affiliate links?
-                        </span>
-
-                        <i class="fa-solid fa-plus text-amber-500 transition-transform duration-300"></i>
-
-                    </button>
-
-                    <div class="faq-content hidden px-8 pb-7 text-zinc-600 leading-8">
-                        No. You'll pay the same price as buying directly from the
-                        software provider. In many cases, you may even receive exclusive
-                        discounts or free trials.
-                    </div>
-
-                </div>
-
-                <!-- Item -->
-                <div class="faq-item bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
-
-                    <button
-                        class="faq-btn w-full flex items-center justify-between text-left px-8 py-6 hover:bg-zinc-50 transition">
-
-                        <span class="text-lg font-semibold text-zinc-900">
-                            Can you help me choose the right software?
-                        </span>
-
-                        <i class="fa-solid fa-plus text-amber-500 transition-transform duration-300"></i>
-
-                    </button>
-
-                    <div class="faq-content hidden px-8 pb-7 text-zinc-600 leading-8">
-                        Absolutely. Tell us about your business requirements and we'll
-                        recommend the most suitable software based on your industry,
-                        budget and team size.
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- Right -->
-            <div class="space-y-5">
-
-                <!-- Item -->
-                <div class="faq-item bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
-
-                    <button
-                        class="faq-btn w-full flex items-center justify-between text-left px-8 py-6 hover:bg-zinc-50 transition">
-
-                        <span class="text-lg font-semibold text-zinc-900">
-                            Do you develop custom software?
-                        </span>
-
-                        <i class="fa-solid fa-plus text-amber-500 transition-transform duration-300"></i>
-
-                    </button>
-
-                    <div class="faq-content hidden px-8 pb-7 text-zinc-600 leading-8">
-                        Yes. We build custom CRM, ERP, Inventory, HRMS, Mobile Apps,
-                        Web Applications and industry-specific software solutions.
-                    </div>
-
-                </div>
-
-                <!-- Item -->
-                <div class="faq-item bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
-
-                    <button
-                        class="faq-btn w-full flex items-center justify-between text-left px-8 py-6 hover:bg-zinc-50 transition">
-
-                        <span class="text-lg font-semibold text-zinc-900">
-                            How long does custom software development take?
-                        </span>
-
-                        <i class="fa-solid fa-plus text-amber-500 transition-transform duration-300"></i>
-
-                    </button>
-
-                    <div class="faq-content hidden px-8 pb-7 text-zinc-600 leading-8">
-                        It depends on project complexity. Small applications usually take
-                        4–8 weeks, while enterprise systems may require several months.
-                    </div>
-
-                </div>
-
-                <!-- Item -->
-                <div class="faq-item bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
-
-                    <button
-                        class="faq-btn w-full flex items-center justify-between text-left px-8 py-6 hover:bg-zinc-50 transition">
-
-                        <span class="text-lg font-semibold text-zinc-900">
-                            Can freelancers advertise on AIManager?
-                        </span>
-
-                        <i class="fa-solid fa-plus text-amber-500 transition-transform duration-300"></i>
-
-                    </button>
-
-                    <div class="faq-content hidden px-8 pb-7 text-zinc-600 leading-8">
-                        Yes. Verified freelancers can sponsor their profiles and receive
-                        premium visibility on our platform to attract new clients.
-                    </div>
-
-                </div>
-
-                <!-- Item -->
-                <div class="faq-item bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
-
-                    <button
-                        class="faq-btn w-full flex items-center justify-between text-left px-8 py-6 hover:bg-zinc-50 transition">
-
-                        <span class="text-lg font-semibold text-zinc-900">
-                            How can software companies advertise here?
-                        </span>
-
-                        <i class="fa-solid fa-plus text-amber-500 transition-transform duration-300"></i>
-
-                    </button>
-
-                    <div class="faq-content hidden px-8 pb-7 text-zinc-600 leading-8">
-                        Software companies can feature their products, sponsor category
-                        pages, publish promotional content and reach highly targeted
-                        business audiences.
-                    </div>
-
-                </div>
-
+                @endforeach
             </div>
 
         </div>
 
         <!-- Bottom CTA -->
-        <div class="mt-20">
-
-            <div
-                class="rounded-3xl bg-gradient-to-r from-amber-500 to-orange-500 p-10 lg:p-14 text-center shadow-2xl">
-
-                <h3 class="text-3xl lg:text-4xl font-bold text-white">
-                    Still Have Questions?
-                </h3>
-
-                <p class="mt-4 text-lg text-amber-100 max-w-2xl mx-auto">
-                    Our experts are ready to help you choose the right software or build
-                    a custom solution for your business.
-                </p>
-
-                <div class="flex flex-wrap justify-center gap-5 mt-8">
-
-                    <a href="#"
-                        class="bg-white text-amber-600 px-8 py-4 rounded-2xl font-semibold hover:shadow-xl transition">
-                        Contact Our Experts
-                    </a>
-
-                    <a href="#"
-                        class="border-2 border-white text-white px-8 py-4 rounded-2xl font-semibold hover:bg-white hover:text-amber-600 transition">
-                        WhatsApp Us
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
+    
     </div>
+    <x-cta-section-component />
 
 </section>
 
