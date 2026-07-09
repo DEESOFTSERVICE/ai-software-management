@@ -99,7 +99,7 @@ class HomeController extends Controller
     public function contact(Request $request)
     {
 
-        // $data['metaTags'] = Page::where('page_name', 'home')->first();
+        $data['metaTags'] = Page::where('page_name', 'contact_us')->first();
         $data['tags'] = [];
         return view('contact')->with($data);
     }
@@ -107,7 +107,7 @@ class HomeController extends Controller
     public function about(Request $request)
     {
 
-        // $data['metaTags'] = Page::where('page_name', 'home')->first();
+        $data['metaTags'] = Page::where('page_name', 'about_us')->first();
         $data['tags'] = [];
         return view('about')->with($data);
     }

@@ -140,11 +140,11 @@ $imageNotFound = asset('home_assets/images/image-not-found.png');
                         <img src="https://i.pravatar.cc/120" class="w-20 h-20 rounded-full mx-auto">
 
                         <h3 class="text-center font-bold text-xl mt-4">
-                            John Smith
+                            {{ $blogDetails->author->full_name ?? 'N/A' }}
                         </h3>
 
                         <p class="text-center text-zinc-500 text-sm mt-2">
-                            Software Expert
+                            {{ $blogDetails->author->bio ?? 'N/A' }}
                         </p>
 
                         <div class="flex justify-center gap-4 mt-5">
@@ -172,6 +172,7 @@ $imageNotFound = asset('home_assets/images/image-not-found.png');
                     <!-- Table of Contents -->
 
                     <!-- Added 'hidden md:block' to the parent div below -->
+                     @if(!empty($blogDetails->table_of_content))
                     <div class="hidden md:block bg-white rounded-3xl p-6 shadow-sm border">
 
                         <h3 class="font-bold text-xl mb-5">
@@ -179,34 +180,21 @@ $imageNotFound = asset('home_assets/images/image-not-found.png');
                         </h3>
 
                         <ul class="space-y-3 text-sm">
-                            <li>
-                                <a href="#overview" class="hover:text-amber-600">
-                                    Introduction
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#features" class="hover:text-amber-600">
-                                    Features
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#pricing" class="hover:text-amber-600">
-                                    Pricing
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#pros" class="hover:text-amber-600">
-                                    Pros & Cons
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#faq" class="hover:text-amber-600">
-                                    FAQ
-                                </a>
-                            </li>
-                        </ul>
 
+                            @foreach(explode(',',$blogDetails->table_of_content) as $k => $v)
+                            @php 
+                            $expAry = explode('||',$v);
+                            @endphp
+                            <li>
+                                <a href="{{ $expAry[0] }}" class="hover:text-amber-600">
+                                    {{ end($expAry) }} 
+                                </a>
+                            </li>
+                            @endforeach
+                           
+                        </ul>
                     </div>
+                    @endif
 
 
                     <!-- Adsense -->
@@ -299,7 +287,7 @@ $imageNotFound = asset('home_assets/images/image-not-found.png');
                             {!! str_replace('[ads_code]',$ads_code, $blogDetails->full_desc) !!}
 
 
-                            <div class="grid md:grid-cols-2 gap-6 mt-10">
+                            <div class="grid md:grid-cols-2 gap-6 mt-10 hidden">
 
                                 <div class="bg-green-50 border border-green-200 rounded-2xl p-6">
 

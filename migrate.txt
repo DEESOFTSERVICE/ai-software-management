@@ -9,3 +9,5 @@ CREATE TABLE `authors` (
   `created_at` TIMESTAMP NULL DEFAULT NULL,
   `updated_at` TIMESTAMP NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `blogs` ADD `table_of_content` TEXT NULL DEFAULT NULL AFTER `thumbnail_image`;
