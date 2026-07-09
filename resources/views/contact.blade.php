@@ -80,7 +80,7 @@
                                 </p>
 
                                 <h4 class="font-semibold">
-                                    hello@example.com
+                                    {{ $websiteSetting->email }}
                                 </h4>
 
                             </div>
@@ -102,7 +102,7 @@
                                 </p>
 
                                 <h4 class="font-semibold">
-                                    +91 98765 43210
+                                    +91 {{ $websiteSetting->whats_app_no }}
                                 </h4>
 
                             </div>
