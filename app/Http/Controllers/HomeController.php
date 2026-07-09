@@ -111,4 +111,28 @@ class HomeController extends Controller
         $data['tags'] = [];
         return view('about')->with($data);
     }
+
+    public function privacyPolicy(Request $request)
+    {
+        $data['metaTags'] = Page::where('page_name', 'privacy_policy')->first();
+        return view('privacy_policy', $data);
+    }
+
+     public function cookiePolicy(Request $request)
+    {
+        $data['metaTags'] = Page::where('page_name', 'cookie_policy')->first();
+        return view('cookie_policy', $data);
+    }
+
+     public function termsConditions(Request $request)
+    {
+        $data['metaTags'] = Page::where('page_name', 'terms_conditions')->first();
+        return view('terms_conditions', $data);
+    }
+
+     public function disclaimer(Request $request)
+    {
+        $data['metaTags'] = Page::where('page_name', 'disclaimer')->first();
+        return view('disclaimer', $data);
+    }
 }

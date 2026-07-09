@@ -470,19 +470,19 @@
 
                     <div class="flex flex-wrap items-center gap-6 text-sm">
 
-                        <a href="#" class="hover:text-amber-400 transition">
+                        <a href="{{ route('privacy.policy') }}" class="hover:text-amber-400 transition">
                             Privacy Policy
                         </a>
 
-                        <a href="#" class="hover:text-amber-400 transition">
+                        <a href="{{ route('terms.conditions') }}" class="hover:text-amber-400 transition">
                             Terms & Conditions
                         </a>
 
-                        <a href="#" class="hover:text-amber-400 transition">
+                        <a href="{{ route('cookie.policy') }}" class="hover:text-amber-400 transition">
                             Cookie Policy
                         </a>
 
-                        <a href="#" class="hover:text-amber-400 transition">
+                        <a href="{{ route('sitemap') }}" class="hover:text-amber-400 transition">
                             Sitemap
                         </a>
 

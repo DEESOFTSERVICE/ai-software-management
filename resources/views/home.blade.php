@@ -17,6 +17,39 @@
 <meta name="twitter:image" content="{{ env('MAIN_SERVER_URL').'/uploads/general_setting_images/'.$websiteSetting->header_logo }}">
 <meta name="twitter:url" content="{{ url('/') }}">
 @endsection
+@section('json-data')
+@php
+    $faqSchema = [
+        "@context" => "https://schema.org",
+        "@type" => "FAQPage",
+        "mainEntity" => []
+    ];
+
+    if (!empty($faqs)) {
+        foreach ($faqs as $faq) {
+            // Check if item is array or object
+            $question = is_array($faq) ? ($faq['question'] ?? '') : ($faq->question ?? '');
+            $answer = is_array($faq) ? ($faq['answer_desc'] ?? '') : ($faq->answer_desc ?? '');
+
+            if (!empty($question) && !empty($answer)) {
+                $faqSchema['mainEntity'][] = [
+                    "@type" => "Question",
+                    "name" => $question,
+                    "acceptedAnswer" => [
+                        "@type" => "Answer",
+                        "text" => $answer
+                    ]
+                ];
+            }
+        }
+    }
+@endphp
+
+<script type="application/ld+json">
+{!! json_encode($faqSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+</script>
+
+@endsection
 @section('pages')
 <!-- Hero Section -->
 <section class="relative overflow-hidden bg-gradient-to-br from-white via-amber-50/40 to-orange-50 py-6">
