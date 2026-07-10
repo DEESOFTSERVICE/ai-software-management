@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Faqs;
+use App\Models\Freelancer;
 use App\Models\Page;
+use App\Models\SoftwareTool;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -17,6 +19,8 @@ class HomeController extends Controller
         $data['faqs'] = Faqs::orderBy('id', 'asc')->limit(6)->get();
         $data['tags'] = [];
         $data['exploreCategory'] = Category::where('domain_id', $this->currentDomainId)->orderBy('total_blogs', 'desc')->get();
+        $data['tools'] = SoftwareTool::where('status','Active')->limit(4)->get();
+        $data['freelancer'] = Freelancer::where('status','Active')->limit(4)->get();
         return view('home')->with($data);
     }
 

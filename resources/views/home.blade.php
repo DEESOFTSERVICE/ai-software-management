@@ -19,38 +19,43 @@
 @endsection
 @section('json-data')
 @php
-    $faqSchema = [
-        "@context" => "https://schema.org",
-        "@type" => "FAQPage",
-        "mainEntity" => []
-    ];
+$faqSchema = [
+"@context" => "https://schema.org",
+"@type" => "FAQPage",
+"mainEntity" => []
+];
 
-    if (!empty($faqs)) {
-        foreach ($faqs as $faq) {
-            // Check if item is array or object
-            $question = is_array($faq) ? ($faq['question'] ?? '') : ($faq->question ?? '');
-            $answer = is_array($faq) ? ($faq['answer_desc'] ?? '') : ($faq->answer_desc ?? '');
+if (!empty($faqs)) {
+foreach ($faqs as $faq) {
+// Check if item is array or object
+$question = is_array($faq) ? ($faq['question'] ?? '') : ($faq->question ?? '');
+$answer = is_array($faq) ? ($faq['answer_desc'] ?? '') : ($faq->answer_desc ?? '');
 
-            if (!empty($question) && !empty($answer)) {
-                $faqSchema['mainEntity'][] = [
-                    "@type" => "Question",
-                    "name" => $question,
-                    "acceptedAnswer" => [
-                        "@type" => "Answer",
-                        "text" => $answer
-                    ]
-                ];
-            }
-        }
-    }
+if (!empty($question) && !empty($answer)) {
+$faqSchema['mainEntity'][] = [
+"@type" => "Question",
+"name" => $question,
+"acceptedAnswer" => [
+"@type" => "Answer",
+"text" => $answer
+]
+];
+}
+}
+}
 @endphp
 
 <script type="application/ld+json">
-{!! json_encode($faqSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    {
+        !!json_encode($faqSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!
+    }
 </script>
 
 @endsection
 @section('pages')
+@php
+$imageNotFound = asset('home_assets/images/image-not-found.png');
+@endphp
 <!-- Hero Section -->
 <section class="relative overflow-hidden bg-gradient-to-br from-white via-amber-50/40 to-orange-50 py-6">
 
@@ -537,7 +542,7 @@
 
             <!-- Company -->
             <!-- Premium Software Card -->
-            @foreach(range(0,3) as $k => $v)
+            @foreach($tools as $k => $v)
             <a href="#"
                 class="group relative overflow-hidden rounded-3xl border border-zinc-200 bg-white p-6 hover:-translate-y-2 hover:border-amber-400 hover:shadow-2xl transition-all duration-300">
 
@@ -545,7 +550,7 @@
 
                 <span
                     class="absolute top-5 right-5 bg-amber-100 text-amber-700 text-xs font-semibold px-3 py-1 rounded-full">
-                    Featured
+                    Popular
                 </span>
 
                 <!-- Logo -->
@@ -553,8 +558,8 @@
                 <div
                     class="w-20 h-20 mx-auto rounded-2xl border border-zinc-100 bg-zinc-50 flex items-center justify-center">
 
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRk-F9oY545UiEitGIcJCNOdj_Wl4waMtmHhFElMA40Wg&s=10"
-                        alt="ClickUp" class="h-12 object-contain transition duration-300 group-hover:scale-110">
+                    <img src="{{ env('MAIN_SERVER_URL').'/uploads/destination_images/'.$v->thumbnail_image }}" onerror="this.onerror=null;this.src='{{ $imageNotFound }}'" alt="{{ $v->destination_name }}"
+                        class="h-12 object-contain transition duration-300 group-hover:scale-110">
 
                 </div>
 
@@ -564,13 +569,13 @@
 
                     <h3 class="text-xl font-bold text-zinc-900 group-hover:text-amber-600 transition">
 
-                        ClickUp
+                        {{ $v->destination_name }}
 
                     </h3>
 
                     <p class="mt-2 text-sm text-zinc-500">
 
-                        Project Management Software
+                        {{ $v->category->category_name ??'N/A'}}
 
                     </p>
 
@@ -588,7 +593,7 @@
 
                     <span class="font-semibold text-zinc-800">
 
-                        4.9
+                        {{ $v->ratings }}
 
                     </span>
 
@@ -603,18 +608,13 @@
                 <!-- Features -->
 
                 <div class="mt-6 flex flex-wrap justify-center gap-2">
-
+                    @if(!empty($v->tags))
+                    @foreach(explode(',',$v->tags) as $tk => $tv)
                     <span class="px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
-                        Cloud
+                        {{ $tv }}
                     </span>
-
-                    <span class="px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
-                        Team Collaboration
-                    </span>
-
-                    <span class="px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
-                        AI
-                    </span>
+                    @endforeach
+                    @endif
 
                 </div>
 
@@ -632,7 +632,7 @@
 
                         <h4 class="font-bold text-lg text-zinc-900">
 
-                            Free
+                            {{ $v->starting_from }}
 
                         </h4>
 
@@ -1067,7 +1067,7 @@
 
         <!-- Cards -->
         <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-8">
-
+            @foreach($freelancer as $k => $v)
             <!-- Card -->
             <div
                 class="group relative bg-white rounded-3xl border border-zinc-200 overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition duration-300">
@@ -1080,15 +1080,15 @@
 
                 <div class="p-8 text-center">
 
-                    <img src="https://i.pravatar.cc/160?img=12"
+                    <img src="{{ env('MAIN_SERVER_URL').'/uploads/destination_images/'.$v->icon }}" onerror="this.onerror=null;this.src='{{ $imageNotFound }}'" alt="{{ $v->destination_name }}"
                         class="w-28 h-28 rounded-full mx-auto border-4 border-white shadow-lg">
 
                     <h3 class="mt-6 text-xl font-bold text-zinc-900">
-                        John Anderson
+                        {{ $v->theme_name }}
                     </h3>
 
                     <p class="mt-2 text-amber-600 font-medium">
-                        Senior Laravel Developer
+                        {{ $v->slug }}
                     </p>
 
                     <div class="flex justify-center gap-1 text-amber-400 mt-4">
@@ -1100,19 +1100,17 @@
                     </div>
 
                     <p class="text-sm text-zinc-500 mt-2">
-                        4.9 Rating • 150+ Projects
+                        {{ $v->ratings }} Rating • {{ $v->completed_project_heading }}
                     </p>
 
                     <div class="flex justify-center gap-3 mt-6">
-
+                        @if(!empty($v->tags))
+                        @foreach(explode(',',$v->tags) as $tk => $tv)
                         <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
-                            Laravel
+                            {{ $tv }}
                         </span>
-
-                        <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
-                            API
-                        </span>
-
+                        @endforeach
+@endif
                     </div>
 
                     <button
@@ -1123,171 +1121,7 @@
                 </div>
 
             </div>
-
-            <!-- Card -->
-            <div
-                class="group relative bg-white rounded-3xl border border-zinc-200 overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition duration-300">
-
-                <div
-                    class="absolute top-5 right-5 bg-amber-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                    Sponsored
-                </div>
-
-                <div class="p-8 text-center">
-
-                    <img src="https://i.pravatar.cc/160?img=32"
-                        class="w-28 h-28 rounded-full mx-auto border-4 border-white shadow-lg">
-
-                    <h3 class="mt-6 text-xl font-bold text-zinc-900">
-                        Emma Wilson
-                    </h3>
-
-                    <p class="mt-2 text-amber-600 font-medium">
-                        Flutter Developer
-                    </p>
-
-                    <div class="flex justify-center gap-1 text-amber-400 mt-4">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-
-                    <p class="text-sm text-zinc-500 mt-2">
-                        5.0 Rating • 95+ Apps
-                    </p>
-
-                    <div class="flex justify-center gap-3 mt-6">
-
-                        <span class="px-3 py-1 rounded-full bg-sky-100 text-sky-700 text-xs font-semibold">
-                            Flutter
-                        </span>
-
-                        <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold">
-                            Firebase
-                        </span>
-
-                    </div>
-
-                    <button
-                        class="mt-8 w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold py-3 rounded-2xl hover:shadow-lg transition">
-                        Hire Now
-                    </button>
-
-                </div>
-
-            </div>
-
-            <!-- Card -->
-            <div
-                class="group relative bg-white rounded-3xl border border-zinc-200 overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition duration-300">
-
-                <div
-                    class="absolute top-5 right-5 bg-amber-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                    Sponsored
-                </div>
-
-                <div class="p-8 text-center">
-
-                    <img src="https://i.pravatar.cc/160?img=18"
-                        class="w-28 h-28 rounded-full mx-auto border-4 border-white shadow-lg">
-
-                    <h3 class="mt-6 text-xl font-bold text-zinc-900">
-                        Michael Brown
-                    </h3>
-
-                    <p class="mt-2 text-amber-600 font-medium">
-                        UI / UX Designer
-                    </p>
-
-                    <div class="flex justify-center gap-1 text-amber-400 mt-4">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star-half-stroke"></i>
-                    </div>
-
-                    <p class="text-sm text-zinc-500 mt-2">
-                        4.8 Rating • 220+ Designs
-                    </p>
-
-                    <div class="flex justify-center gap-3 mt-6">
-
-                        <span class="px-3 py-1 rounded-full bg-pink-100 text-pink-700 text-xs font-semibold">
-                            Figma
-                        </span>
-
-                        <span class="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold">
-                            UX
-                        </span>
-
-                    </div>
-
-                    <button
-                        class="mt-8 w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold py-3 rounded-2xl hover:shadow-lg transition">
-                        Hire Now
-                    </button>
-
-                </div>
-
-            </div>
-
-            <!-- Card -->
-            <div
-                class="group relative bg-white rounded-3xl border border-zinc-200 overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition duration-300">
-
-                <div
-                    class="absolute top-5 right-5 bg-amber-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                    Sponsored
-                </div>
-
-                <div class="p-8 text-center">
-
-                    <img src="https://i.pravatar.cc/160?img=51"
-                        class="w-28 h-28 rounded-full mx-auto border-4 border-white shadow-lg">
-
-                    <h3 class="mt-6 text-xl font-bold text-zinc-900">
-                        Sophia Taylor
-                    </h3>
-
-                    <p class="mt-2 text-amber-600 font-medium">
-                        Digital Marketing Expert
-                    </p>
-
-                    <div class="flex justify-center gap-1 text-amber-400 mt-4">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-
-                    <p class="text-sm text-zinc-500 mt-2">
-                        5.0 Rating • 300+ Clients
-                    </p>
-
-                    <div class="flex justify-center gap-3 mt-6">
-
-                        <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
-                            SEO
-                        </span>
-
-                        <span class="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-semibold">
-                            Google Ads
-                        </span>
-
-                    </div>
-
-                    <button
-                        class="mt-8 w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold py-3 rounded-2xl hover:shadow-lg transition">
-                        Hire Now
-                    </button>
-
-                </div>
-
-            </div>
+            @endforeach
 
         </div>
 
@@ -1378,7 +1212,7 @@
         </div>
 
         <!-- Bottom CTA -->
-    
+
     </div>
     <x-cta-section-component />
 

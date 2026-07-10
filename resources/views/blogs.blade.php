@@ -97,7 +97,7 @@ $imageNotFound = asset('home_assets/images/image-not-found.png');
 
                     <div class="space-y-3">
                         @foreach($exploreCategory as $k => $v)
-                        <a href="#" class="flex items-center justify-between rounded-2xl px-4 py-3 hover:bg-amber-50 hover:text-amber-600 transition">
+                        <a href="{{ route('blogs.category',$v->slug) }}" class="flex items-center justify-between rounded-2xl px-4 py-3 hover:bg-amber-50 hover:text-amber-600 transition">
                             <div class="flex items-center gap-3">
                                 <i class="fa-solid fa-chart-line text-amber-500"></i>
                                 <span>{{ $v->category_name }}</span>
