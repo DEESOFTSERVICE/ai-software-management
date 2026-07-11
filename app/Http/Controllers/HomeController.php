@@ -18,7 +18,7 @@ class HomeController extends Controller
         $data['metaTags'] = Page::where('page_name', 'home')->first();
         $data['faqs'] = Faqs::orderBy('id', 'asc')->limit(6)->get();
         $data['tags'] = [];
-        $data['exploreCategory'] = Category::where('domain_id', $this->currentDomainId)->orderBy('total_blogs', 'desc')->get();
+        $data['exploreCategory'] = Category::where('domain_id', $this->currentDomainId)->orderBy('total_blogs', 'desc')->limit(8)->get();
         $data['tools'] = SoftwareTool::where('status','Active')->limit(4)->get();
         $data['freelancer'] = Freelancer::where('status','Active')->limit(4)->get();
         return view('home')->with($data);

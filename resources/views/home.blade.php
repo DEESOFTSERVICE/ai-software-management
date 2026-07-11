@@ -1,6 +1,9 @@
 @extends('layout')
 @section('title',$metaTags->meta_title)
 @section('meta_tags')
+@php
+$trackingSettings = \App\Models\TrackingSetting::find(1);
+@endphp
 <meta name="robots" content="index, follow">
 <meta name="title" content="{{ $metaTags->meta_title }}">
 <meta name="description" content="{{ $metaTags->meta_description }}">
@@ -16,6 +19,11 @@
 <meta name="twitter:description" content="{{ $metaTags->meta_description }}">
 <meta name="twitter:image" content="{{ env('MAIN_SERVER_URL').'/uploads/general_setting_images/'.$websiteSetting->header_logo }}">
 <meta name="twitter:url" content="{{ url('/') }}">
+
+    @if($trackingSettings->header_content != null)
+    {!! $trackingSettings->header_content !!}
+    @endif
+
 @endsection
 @section('json-data')
 @php
@@ -46,10 +54,10 @@ $faqSchema['mainEntity'][] = [
 @endphp
 
 <script type="application/ld+json">
-    {
-        !!json_encode($faqSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!
-    }
+    {!!json_encode($faqSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
 </script>
+
+
 
 @endsection
 @section('pages')
@@ -558,7 +566,7 @@ $imageNotFound = asset('home_assets/images/image-not-found.png');
                 <div
                     class="w-20 h-20 mx-auto rounded-2xl border border-zinc-100 bg-zinc-50 flex items-center justify-center">
 
-                    <img src="{{ env('MAIN_SERVER_URL').'/uploads/destination_images/'.$v->thumbnail_image }}" onerror="this.onerror=null;this.src='{{ $imageNotFound }}'" alt="{{ $v->destination_name }}"
+                    <img src="{{ env('MAIN_SERVER_URL').'/uploads/destination_images/'.$v->image }}" onerror="this.onerror=null;this.src='{{ $imageNotFound }}'" alt="{{ $v->destination_name }}"
                         class="h-12 object-contain transition duration-300 group-hover:scale-110">
 
                 </div>
@@ -1080,7 +1088,7 @@ $imageNotFound = asset('home_assets/images/image-not-found.png');
 
                 <div class="p-8 text-center">
 
-                    <img src="{{ env('MAIN_SERVER_URL').'/uploads/destination_images/'.$v->icon }}" onerror="this.onerror=null;this.src='{{ $imageNotFound }}'" alt="{{ $v->destination_name }}"
+                    <img src="{{ env('MAIN_SERVER_URL').'/uploads/icon_images/'.$v->icon }}" onerror="this.onerror=null;this.src='{{ $imageNotFound }}'" alt="{{ $v->destination_name }}"
                         class="w-28 h-28 rounded-full mx-auto border-4 border-white shadow-lg">
 
                     <h3 class="mt-6 text-xl font-bold text-zinc-900">
@@ -1217,5 +1225,7 @@ $imageNotFound = asset('home_assets/images/image-not-found.png');
     <x-cta-section-component />
 
 </section>
-
+  @if($trackingSettings->footer_content != null)
+    {!! $trackingSettings->footer_content !!}
+    @endif
 @endsection
