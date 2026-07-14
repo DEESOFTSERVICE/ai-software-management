@@ -42,7 +42,7 @@ class HomeController extends Controller
     public function tags(String $tag)
     {
 
-        $data['metaTags'] = Page::where('page_name', 'blog-tags')->first();
+        $data['metaTags'] = Page::where('page_name', $tag)->first();
         $data['pageType'] = 'tags';
         $data['popularBlog'] = Blog::where('domain_id', $this->currentDomainId)->whereRaw("FIND_IN_SET(?, tags)", [$tag])->orderBy('views', 'desc')->limit(8)->get();
         $data['exploreCategory'] = Category::where('domain_id', $this->currentDomainId)->orderBy('total_blogs', 'desc')->get();
@@ -64,7 +64,7 @@ class HomeController extends Controller
     public function blogDetails(String $slug)
     {
         $data['blogDetails'] = Blog::where('slug', $slug)->with(['author', 'category'])->first();
-        
+        //dd($data['blogDetails']);
         if (!empty($data['blogDetails'])) {
             $data['popularBlog'] = Blog::where('domain_id', $this->currentDomainId)->where('id', '!=', $data['blogDetails']->id)->orderBy('views', 'desc')->limit(4)->get();
             $data['exploreCategory'] = Category::where('domain_id', $this->currentDomainId)->orderBy('total_blogs', 'desc')->get();

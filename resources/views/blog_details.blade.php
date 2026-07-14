@@ -80,6 +80,32 @@
         color: #b45309;
         /* amber-700 */
     }
+	/* Bold Text CSS */
+.prose strong, .prose b {
+    color: #09090b; /* zinc-950 - text ko deeply clear aur sharp dikhane ke liye */
+    font-weight: 700;
+}
+
+
+.prose iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Automatically adjusts height based on width */
+    height: auto;
+    
+    border: 0;
+    border-radius: 0.5rem; /* Rounded corners */
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* Zinc theme smooth shadow */
+}
+	
+	/* Mobile Devices Only (Screens smaller than 768px) */
+@media (max-width: 768px) {
+    .prose p, 
+    .prose ul li {
+        text-align: justify;
+        text-justify: inter-word; /* Words ke beech ka spacing smooth karne ke liye */
+    }
+}
+
 </style>
 @endpush
 @section('json-data')
@@ -133,14 +159,39 @@ $imageNotFound = asset('home_assets/images/image-not-found.png');
             <aside class="lg:col-span-3">
 
                 <div class="sticky top-24 space-y-6">
+  <!-- Table of Contents -->
 
+                    <!-- Added 'hidden md:block' to the parent div below -->
+                     @if(!empty($blogDetails->table_of_content))
+                    <div class="hidden md:block bg-white rounded-3xl p-6 shadow-sm border">
+
+                        <h3 class="font-bold text-xl mb-5">
+                            Table of Contents
+                        </h3>
+
+                        <ul class="space-y-3 text-sm">
+
+                            @foreach(explode(',',$blogDetails->table_of_content) as $k => $v)
+                            @php 
+                            $expAry = explode('||',$v);
+                            @endphp
+                            <li>
+                                <a href="{{ $expAry[0] }}" class="hover:text-amber-600">
+                                    {{ end($expAry) }} 
+                                </a>
+                            </li>
+                            @endforeach
+                           
+                        </ul>
+                    </div>
+                    @endif
                     <!-- Author -->
                     <div class="hidden md:block bg-white rounded-3xl p-6 shadow-sm border">
 
                         <img src="https://i.pravatar.cc/120" class="w-20 h-20 rounded-full mx-auto">
 
                         <h3 class="text-center font-bold text-xl mt-4">
-                            {{ $blogDetails->author->full_name ?? 'N/A' }}
+                            {{ $blogDetails->author->author_name ?? 'N/A' }}
                         </h3>
 
                         <p class="text-center text-zinc-500 text-sm mt-2">
@@ -169,32 +220,7 @@ $imageNotFound = asset('home_assets/images/image-not-found.png');
 
                     </div>
 
-                    <!-- Table of Contents -->
-
-                    <!-- Added 'hidden md:block' to the parent div below -->
-                     @if(!empty($blogDetails->table_of_content))
-                    <div class="hidden md:block bg-white rounded-3xl p-6 shadow-sm border">
-
-                        <h3 class="font-bold text-xl mb-5">
-                            Table of Contents
-                        </h3>
-
-                        <ul class="space-y-3 text-sm">
-
-                            @foreach(explode(',',$blogDetails->table_of_content) as $k => $v)
-                            @php 
-                            $expAry = explode('||',$v);
-                            @endphp
-                            <li>
-                                <a href="{{ $expAry[0] }}" class="hover:text-amber-600">
-                                    {{ end($expAry) }} 
-                                </a>
-                            </li>
-                            @endforeach
-                           
-                        </ul>
-                    </div>
-                    @endif
+                  
 
 
                     <!-- Adsense -->
@@ -218,8 +244,12 @@ $imageNotFound = asset('home_assets/images/image-not-found.png');
 
                 <article class="bg-white rounded-3xl shadow-sm overflow-hidden">
 
-                    <img src="{{ env('MAIN_SERVER_URL').'/uploads/blog_images/'.$blogDetails->thumbnail_image }}" onerror="this.onerror=null;this.src='{{ $imageNotFound }}'" alt="{{ $blogDetails->title }}"
-                        class="w-full h-[250px] md:h-[450px] object-cover">
+                    <div class="w-full max-w-full overflow-hidden">
+
+        <img src="{{ env('MAIN_SERVER_URL').'/uploads/blog_images/'.$blogDetails->thumbnail_image }}" onerror="this.onerror=null;this.src='{{ $imageNotFound }}'" alt="{{ $blogDetails->title }}"
+       class="w-full h-auto max-h-[250px] md:max-h-[450px] object-cover" />
+</div>
+
 
                     <div class="p-3 md:p-10">
 
@@ -321,6 +351,42 @@ $imageNotFound = asset('home_assets/images/image-not-found.png');
 
                             </div>
 
+							<!-- Blog Tags -->
+
+<section class="mt-12">
+
+    <div class="bg-white rounded-3xl border border-zinc-200 p-8">
+
+<div class="">
+
+    <div class="flex items-center flex-wrap gap-3">
+
+        <span class="font-semibold text-zinc-800 flex items-center gap-2">
+
+            <i class="fa-solid fa-tags text-amber-500"></i>
+
+            Tags :
+
+        </span>
+
+		@if(!empty($blogDetails->tags))
+		@foreach(explode(',',$blogDetails->tags) as $tk => $tv)
+        <a href="{{ route('blog.tags',$tv) }}"
+            class="px-4 py-2 rounded-full bg-amber-100 text-amber-700 text-sm font-medium hover:bg-amber-500 hover:text-white transition">
+
+            {{ ucfirst($tv) }}
+
+        </a>
+@endforeach
+      @endif
+
+    </div>
+
+</div>
+
+    </div>
+
+</section>
                         </div>
 
                         <!-- Adsense -->

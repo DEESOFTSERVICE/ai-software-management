@@ -20,3 +20,5 @@ Route::get('/disclaimer', [HomeController::class, 'disclaimer'])->name('disclaim
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/blogs-sitemap.xml', [SitemapController::class, 'blogsSitemap'])->name('blogs.sitemap');
 Route::get('/pages-sitemap.xml', [SitemapController::class, 'pagesSitemap'])->name('pages.sitemap');
+
+Route::get('/robots.txt', [SitemapController::class, 'robots']);
